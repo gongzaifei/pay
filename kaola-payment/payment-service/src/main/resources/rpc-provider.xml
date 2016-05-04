@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://code.alibabatech.com/schema/dubbo        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <dubbo:registry id="service_registry" address="${dubbo.registry.address}" default="false"/>
+    <dubbo:protocol threads="5000"/>
+    <dubbo:application name="kaolafm-cahce-rpc-provider"
+                       logger="slf4j"/>
+
+    <!-- 用dubbo协议在20880端口暴露服务 -->
+
+    <dubbo:protocol name="dubbo" port="20881"/>
+    <dubbo:protocol name="http" port="8080" server="servlet" contextpath="/"/>
+
+    <dubbo:service interface="com.kaolafm.payment.service.IUserTestService"
+                   ref="userTestServiceImpl" timeout="1500" protocol="dubbo" registry="service_registry"/>
+
+    <dubbo:annotation/>
+    <dubbo:monitor protocol="registry"/>
+</beans>

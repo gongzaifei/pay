@@ -71,31 +71,6 @@
 		</encoder>
 	</appender>
 
-	<appender name="socialLogAppender"
-			  class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${config_path}/social.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${config_path}/social.%d{yyyy-MM-dd}.log
-			</fileNamePattern>
-			<maxHistory>7</maxHistory>
-		</rollingPolicy>
-		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-			</pattern>
-		</encoder>
-	</appender>
-	
-	<!-- <appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender"> -->
-	<!-- <RemoteHost>10.10.4.149</RemoteHost> -->
-	<!-- <Port>6000</Port> -->
-	<!-- <ReconnectionDelay>10000</ReconnectionDelay> -->
-	<!-- <IncludeCallerData>false</IncludeCallerData> -->
-	<!-- </appender> -->
-	<!-- <logger name="com.kaolafm.cache.util.StatDispatcher" level="INFO" -->
-	<!-- additivity="false"> -->
-	<!-- <appender-ref ref="statistics" /> -->
-	<!-- <appender-ref ref="SOCKET" /> -->
-	<!-- </logger> -->
 
 	<logger name="requestLog"
 		level="INFO" additivity="false">
@@ -112,9 +87,6 @@
 	
 	<logger name="errorLog" level="INFO" additivity="false">
         <appender-ref ref="errorLogAppender"/>
-    </logger>
-	<logger name="socialLog" level="INFO" additivity="false">
-        <appender-ref ref="socialLogAppender"/>
     </logger>
 
 	<root level="INFO">

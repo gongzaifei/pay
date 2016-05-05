@@ -75,7 +75,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-
+		<dependency>
+            <groupId>kaola-counter-parent</groupId>
+            <artifactId>kaola-counter-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -129,6 +133,49 @@
         	<artifactId>commons-lang3</artifactId>
         	<version>3.4</version>
         </dependency>
+        
+        <dependency>
+			<groupId>com.kaolafm.user</groupId>
+			<artifactId>user-base-api</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
+
+        <dependency>
+            <groupId>com.kaolafm.kaolafm-resource-interface</groupId>
+            <artifactId>kaolafm-resource-interface</artifactId>
+            <version>${api.version}</version>
+        </dependency>
+		
+		<dependency>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd-core</artifactId>
+			<version>3.6.2</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>3.5.6</version>
+        </dependency>
+        
+        <dependency>
+		  <groupId>com.kaolafm.monitor</groupId>
+		  <artifactId>monitor-web-pojo</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+        <!--json-lib-->
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
+        
+        <dependency>
+		  <groupId>com.kaolafm.imservice</groupId>
+		  <artifactId>imservice-api</artifactId>
+		  <version>1.0-SNAPSHOT</version>
+		</dependency>
     </dependencies>
 
     <profiles>

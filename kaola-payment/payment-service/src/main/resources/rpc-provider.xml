@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://code.alibabatech.com/schema/dubbo        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
-    <dubbo:registry id="service_registry" address="${dubbo.registry.address}" default="false"/>
-    <dubbo:protocol threads="5000"/>
-    <dubbo:application name="kaolafm-cahce-rpc-provider"
-                       logger="slf4j"/>
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans        
+       http://www.springframework.org/schema/beans/spring-beans.xsd        
+       http://code.alibabatech.com/schema/dubbo        
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+       
+    <dubbo:registry id="service_registry" address="${dubbo.registry.address}" register="${dubbo.registry.register}" default="false"/>
+    <dubbo:application name="kaolafm-pay-rpc-provider" logger="slf4j" />
 
     <!-- 用dubbo协议在20880端口暴露服务 -->
 
-    <dubbo:protocol name="dubbo" port="20881"/>
+    <dubbo:protocol name="dubbo" port="20881" register="${dubbo.registry.register}" threads="5000"/>
     <dubbo:protocol name="http" port="8080" server="servlet" contextpath="/"/>
+    <dubbo:provider timeout="30000" threads="1000" retries="0"/>
 
-    <dubbo:service interface="com.kaolafm.payment.service.IUserTestService"
-                   ref="userTestServiceImpl" timeout="1500" protocol="dubbo" registry="service_registry"/>
+    <dubbo:service interface="com.kaolafm.payment.service.IOrderService"
+                   ref="orderServiceImpl" protocol="dubbo" registry="service_registry"/>
+    <dubbo:service interface="com.kaolafm.payment.service.IAlipayService"
+                   ref="alipayServiceImpl" protocol="dubbo" registry="service_registry"/>
+    
+    <dubbo:service interface="com.kaolafm.payment.service.IWxpayService"
+                   ref="wxpayServiceImpl" protocol="dubbo" registry="service_registry"/>
+    <dubbo:service interface="com.kaolafm.payment.service.IUserCenterService"
+                   ref="userCenterService" protocol="dubbo" registry="service_registry"/>
+    <dubbo:service interface="com.kaolafm.payment.service.IRechargePlanService"
+                   ref="rechargePlanServiceImpl" protocol="dubbo" registry="service_registry"/>
+    <dubbo:service interface="com.kaolafm.payment.service.IGiftService"
+                   ref="giftServiceImpl" protocol="dubbo" registry="service_registry"/>
+    <dubbo:service interface="com.kaolafm.payment.service.IosPayService"
+                   ref="iosPayServiceImpl" protocol="dubbo" registry="service_registry"/>
+    <dubbo:service interface="com.kaolafm.payment.service.IWithdrawService"
+                   ref="withdrawServiceImpl" protocol="dubbo" registry="service_registry"/>
 
+
+
+    <dubbo:reference interface="com.kaolafm.user.service.SystemLetterService" id="rpcSystemLetterService" timeout="1500" registry="service_registry"/>
+    <dubbo:reference interface="com.kaolafm.user.service.VerifyCodeService" id="rpcVerifyCodeService" timeout="1500" registry="service_registry"/>
+    <dubbo:reference interface="com.kaolafm.user.service.UserService" id="rpcUserService" timeout="1500" registry="service_registry"/>
     <dubbo:annotation/>
+
     <dubbo:monitor protocol="registry"/>
 </beans>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.RechargePlanDao">
+
+	<resultMap id="rechargePlanMap" type="com.kaolafm.payment.entity.PayRechargePlan" >
+	    <id column="id" property="id" />
+	    <result column="name" property="name"/>
+	    <result column="description" property="description"/>
+	    <result column="img" property="img"/>
+	    <result column="cash_fee" property="cashFee"/>
+	    <result column="leaf_quantity" property="leafQuantity"/>
+	    <result column="apply_type" property="applyType"/>
+	    <result column="plan_limit_type" property="planLimitType"/>
+	    <result column="status" property="status"/>
+	    <result column="createby" property="createby"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="update_date" property="updateDate"/>
+	    <result column="product_id" property="productId"/>
+	    <result column="present_leaf_quantity" property="presentLeafQuantity"/>
+  	</resultMap>
+
+	<select id="getPlanById" parameterType="int" resultMap="rechargePlanMap">
+		SELECT * FROM pay_recharge_plan WHERE id = #{planId} and status=0 limit 1
+	</select>
+	<select id="getPlanAll" parameterType="int" resultMap="rechargePlanMap">
+		SELECT * FROM pay_recharge_plan WHERE id = #{planId}  limit 1
+	</select>
+	<select id="getPlanByName" parameterType="String" resultMap="rechargePlanMap">
+		SELECT * FROM pay_recharge_plan WHERE name = #{name}  limit 1
+	</select>
+
+	<select id="getRechargePlanList" parameterType="int" resultMap="rechargePlanMap">
+		SELECT * FROM pay_recharge_plan WHERE apply_type = #{deviceType} and status=0
+	</select>
+	
+	<insert id="save" parameterType="PayRechargePlan" useGeneratedKeys = "true" keyProperty="id">
+		INSERT INTO pay_recharge_plan(name,description,img,cash_fee,leaf_quantity,apply_type,plan_limit_type,status,createby,create_date,update_date,product_id,present_leaf_quantity)
+		VALUES(#{name},#{description},#{img},#{cashFee},#{leafQuantity},#{applyType},#{planLimitType},0,#{createby},#{createDate},#{updateDate},#{productId},#{presentLeafQuantity})
+	</insert>
+	
+	<update id="update" parameterType="PayRechargePlan">
+		UPDATE pay_recharge_plan
+		SET name=#{name},description=#{description},img=#{img},cash_fee=#{cashFee},
+			leaf_quantity=#{leafQuantity},apply_type=#{applyType},plan_limit_type=#{planLimitType},
+			status=#{status},createby=#{createby},create_date=#{createDate},update_date=#{updateDate},
+			product_id=#{productId},present_leaf_quantity=#{presentLeafQuantity}
+		WHERE id=#{id}
+	</update>
+	
+	<update id="batchUpdatePlanStatus" parameterType="map">
+		UPDATE pay_recharge_plan SET status=#{status}
+		WHERE id IN
+		<foreach collection="planids" item="planid" open="(" separator="," close=")"> 
+	        #{planid} 
+	    </foreach>
+	</update>
+	<select id="count" parameterType="map" resultType="int">
+		SELECT count(*) FROM pay_recharge_plan WHERE 1=1
+		<if test="deviceType != null">
+			AND apply_type = #{deviceType}
+		</if>
+		<if test="status !=null">
+			AND status = #{status}
+		</if>
+		<if test="name != null">
+			AND name like "%"#{name}"%"
+		</if>
+	</select>
+	<select id="pageRechargePlan" parameterType="map" resultMap="rechargePlanMap">
+		SELECT * FROM pay_recharge_plan WHERE 1=1
+		<if test="deviceType != null">
+			AND apply_type = #{deviceType}
+		</if>
+		<if test="status !=null">
+			AND status = #{status}
+		</if>
+		<if test="name != null">
+			AND name like "%"#{name}"%"
+		</if>
+		ORDER BY create_date DESC LIMIT #{limitStart},#{limitEnd}
+	</select>
+
+
+
+</mapper>

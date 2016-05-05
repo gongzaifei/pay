@@ -1,14 +1,5 @@
 package com.kaolafm.payment.utils;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +7,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpClientUtils
 {
@@ -61,115 +57,8 @@ public class HttpClientUtils
         }
     }
 
-    public String httpClientRequest(int outTime, int reqTime)
-    {
-        if (outTime > 0) {
-            init(outTime);
-        } else {
-            init();
-        }
-        String value = null;
-        if (null == this.para) {
-            return value;
-        }
-        PostMethod postMethod = new PostMethod(this.url);
-        if (reqTime > 0) {
-            postMethod.getParams().setParameter("http.socket.timeout", Integer.valueOf(reqTime));
-        } else {
-            postMethod.getParams().setParameter("http.socket.timeout", Integer.valueOf(this.reqTime));
-        }
-        int len = this.para.size();
-        NameValuePair[] NameValuePairs = new NameValuePair[len];
-        int i = 0;
-        for (String key : this.para.keySet()) {
-            if (!StringUtils.isEmpty((String)this.para.get(key)))
-            {
-                NameValuePairs[i] = new NameValuePair(key, ((String)this.para.get(key)).toString());
-                i++;
-            }
-        }
-        postMethod.setRequestBody(NameValuePairs);
-        postMethod.getParams().setParameter("http.protocol.content-charset", this.encoding);
-        try
-        {
-            this.httpClient.executeMethod(postMethod);
-            int state = postMethod.getStatusCode();
-            if (state == 200) {
-                value = readInputStream(postMethod.getResponseBodyAsStream());
-            } else {
-                this.logger.error("向(" + getUrl() + ")发请求返回state=" + state + "");
-            }
-        }
-        catch (Exception e)
-        {
-            this.logger.error("发送(" + this.para + ")失败，原因(" + e.getMessage() + ")");
-        }
-        postMethod.releaseConnection();
-        return value;
-    }
 
-    public String httpClientRequest()
-    {
-        return httpClientRequest(-1, -1);
-    }
 
-    public Map<String, String> httpClientRequestD()
-    {
-        Map<String, String> map = new HashMap();
-        map.put("status", "998");
-        this.logger.info("post:" + this.url);
-        init();
-        String value = null;
-        if (null == this.para) {
-            return map;
-        }
-        PostMethod postMethod = new PostMethod(this.url);
-        postMethod.getParams().setParameter("http.socket.timeout", Integer.valueOf(this.reqTime));
-        int len = this.para.size();
-        NameValuePair[] NameValuePairs = new NameValuePair[len];
-        int i = 0;
-        for (String key : this.para.keySet()) {
-            if (!StringUtils.isEmpty((String)this.para.get(key)))
-            {
-                NameValuePairs[i] = new NameValuePair(key, ((String)this.para.get(key)).toString());
-                i++;
-            }
-        }
-        postMethod.setRequestBody(NameValuePairs);
-        postMethod.getParams().setParameter("http.protocol.content-charset", this.encoding);
-        try
-        {
-            this.httpClient.executeMethod(postMethod);
-            int state = postMethod.getStatusCode();
-            map.put("status", state + "");
-            if (state == 200) {
-                try
-                {
-                    value = readInputStream(postMethod.getResponseBodyAsStream());
-                    map.put("value", value);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            } else {
-                this.logger.error("向(" + getUrl() + ")发请求返回state=" + state + "");
-            }
-        }
-        catch (IOException e)
-        {
-            map.put("status", "999");
-            e.printStackTrace();
-        }
-        postMethod.releaseConnection();
-        return map;
-    }
-
-    @Deprecated
-    public String httpClientGet()
-    {
-        return httpClientGet(-1, -1);
-    }
 
     public String httpClientGet(int outTime, int reqTime)
     {
@@ -310,7 +199,6 @@ public class HttpClientUtils
 				result += line;
 			}
 		} catch (Exception e) {
-			System.out.println("发送 POST 请求出现异常！" + e);
 			e.printStackTrace();
 		}
 		// 使用finally块来关闭输出流、输入流

@@ -1,18 +1,19 @@
 package com.kaolafm.payment.controller;
 
-import com.alibaba.dubbo.rpc.RpcException;
-import com.kaolafm.payment.exception.ExceptionEnums;
-import com.kaolafm.payment.exception.ServiceException;
-import com.kaolafm.payment.response.CommonResponse;
+import java.text.MessageFormat;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.text.MessageFormat;
+import com.kaolafm.payment.exception.ExceptionEnums;
+import com.kaolafm.payment.exception.ServiceException;
+import com.kaolafm.payment.response.CommonResponse;
 
 @ControllerAdvice
 public class GlobalExceptionController {
@@ -28,9 +29,10 @@ public class GlobalExceptionController {
 		CommonResponse<Object> cp = new CommonResponse<Object>();
 
 		StringBuilder errBuilder = new StringBuilder();
-		errBuilder.append(enums.getMessage());
 		if (ex.getAddMsg() != null) {
-			errBuilder.append(":").append(ex.getAddMsg());
+			errBuilder.append(ex.getAddMsg());
+		}else{
+			errBuilder.append(enums.getMessage());
 		}
 		cp.setCode(String.valueOf(enums.getCode()));
 		cp.setMessage(errBuilder.toString());

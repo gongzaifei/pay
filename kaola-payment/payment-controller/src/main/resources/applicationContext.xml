@@ -10,4 +10,12 @@
 
 	<context:component-scan base-package="com.kaolafm"/>
 	<import resource="classpath*:rpc-consumer.xml"/>
+	
+	<bean class="com.kaolafm.payment.utils.TopicProducer" init-method="init">
+        <property name="host" value="${rabbitmq.host}"/>
+        <property name="port" value="${rabbitmq.port}"/>
+        <property name="virtualHost" value="${rabbitmq.virtualHost}"/>
+        <property name="username" value="${rabbitmq.username}"/>
+        <property name="password" value="${rabbitmq.password}"/>
+    </bean>
 </beans>

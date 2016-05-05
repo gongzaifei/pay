@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.AccountWithdrawalDao">
+
+	<resultMap id="accountWithdrawalResult" type="com.kaolafm.payment.entity.PayAccountWithdrawal" >
+	    <id column="id" property="id"/>
+	    <result column="uid" property="uid"/>
+	    <result column="leaf_quantity" property="leafQuantity"/>
+	    <result column="cash_quantity" property="cashQuantity"/>
+	    <result column="alipay_account" property="alipayAccount"/>
+	    <result column="alipay_account_name" property="aliplayAccountName"/>
+	    <result column="status" property="status"/>
+	    <result column="creater_name" property="createrName"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="updateby" property="updateBy"/>
+	    <result column="updater_name" property="updaterName"/>
+	    <result column="update_date" property="updateDate"/>
+	    <result column="reason" property="reason"/>
+	    <result column="remain_leaf_quantity" property="remainLeafQuantity"/>
+	    <result column="remain_cash" property="remainCash"/>
+	    <result column="version" property="version"/>
+  	</resultMap>
+
+	 <select id="saveApplyCash" parameterType="PayAccountWithdrawal">
+		INSERT INTO pay_account_withdrawal(id, uid,leaf_quantity,cash_quantity,alipay_account,alipay_account_name,status,creater_name,create_date,updateby,updater_name,update_date,remain_leaf_quantity,remain_cash)
+		VALUES(#{id},#{uid},#{leafQuantity},#{cashQuantity},#{alipayAccount},#{aliplayAccountName},#{status},#{createrName},#{createDate},#{updateBy},#{updaterName},#{updateDate},#{remainLeafQuantity},#{remainCash})
+	 </select>
+	 
+	 <select id="getUserWithdrawalInfoDayByUid" parameterType="Long" resultMap="accountWithdrawalResult">
+	 	SELECT * FROM pay_account_withdrawal WHERE uid=#{uid} and to_days(`create_date`) = to_days(now());
+	 </select>
+	 
+	 <select id="getUserWithdrawalInfoDayByUidLock" parameterType="Long" resultMap="accountWithdrawalResult">
+	 	SELECT * FROM pay_account_withdrawal WHERE uid=#{uid} and to_days(`create_date`) = to_days(now()) FOR UPDATE;
+	 </select>
+	 
+	 <select id="getUserWithdrawalRecordCount" parameterType="map" resultType="long">
+	 	SELECT COUNT(*) FROM pay_account_withdrawal
+	 	<where>
+	 		<if test="uid != null">
+	 			uid=#{uid}
+	 		</if>
+	 		<if test="status != null">
+	 			AND status=#{status}
+	 		</if>
+	 		<if test="id != null">
+	 			AND id=#{id}
+	 		</if>
+	 	</where>
+	 </select>
+	 
+	 <select id="getUserWithdrawalRecordList" parameterType="map" resultMap="accountWithdrawalResult">
+	 	SELECT * FROM pay_account_withdrawal
+	 	<where>
+	 		<if test="uid != null">
+	 			uid=#{uid}
+	 		</if>
+	 		<if test="status != null">
+	 			AND status=#{status}
+	 		</if>
+	 		<if test="status == null">
+	 			AND status!=5
+	 		</if>
+	 		<if test="id != null">
+	 			AND id=#{id}
+	 		</if>
+	 	</where>
+	 	ORDER BY create_date DESC 
+	 	LIMIT #{limitStart},#{limitEnd}
+	 </select>
+
+	 <select id="getWithdrawalList" parameterType="map" resultMap="accountWithdrawalResult">
+	 	SELECT * FROM pay_account_withdrawal WHERE  1=1
+		 <if test="status != null">
+			 AND status = #{status}
+		 </if>
+		 <if test="startDate != null">
+			 AND create_date >= #{startDate}
+		 </if>
+		 <if test="endDate != null">
+			 AND create_date <![CDATA[ <= ]]> #{endDate}
+		 </if>
+		 <if test="nickName != null">
+			 AND creater_name like "%"#{nickName}"%"
+		 </if>
+		 <if test="aliAccount != null">
+			 AND alipay_account = #{aliAccount}
+		 </if>
+		 ORDER BY create_date DESC LIMIT #{limitStart},#{limitEnd}
+	 </select>
+
+
+	<select id="getWithdrawalListCount" parameterType="map" resultType="int">
+		SELECT count(*) FROM pay_account_withdrawal WHERE 1=1
+		<if test="status != null">
+			AND status = #{status}
+		</if>
+		<if test="startDate != null">
+			AND create_date >= #{startDate}
+		</if>
+		<if test="endDate != null">
+			AND create_date <![CDATA[ <= ]]> #{endDate}
+		</if>
+		<if test="nickName != null">
+			AND creater_name like "%"#{nickName}"%"
+		</if>
+		<if test="aliAccount != null">
+			AND alipay_account = #{aliAccount}
+		</if>
+	</select>
+
+
+	<update id="batchUpdate" parameterType="map">
+		UPDATE pay_account_withdrawal SET status = #{status},reason = #{reason}
+		WHERE id in
+		<foreach collection="ids" item="item" index="index"
+				 open="(" separator="," close=")">#{item}
+		</foreach>
+	</update>
+
+	<select id="getWithdrawDetail" parameterType="string" resultMap="accountWithdrawalResult">
+		SELECT * FROM pay_account_withdrawal WHERE id = #{id};
+	</select>
+	<select id="getAllWithdraw" parameterType="long" resultMap="accountWithdrawalResult">
+		SELECT * FROM pay_account_withdrawal WHERE status = 1 ORDER BY create_date DESC;
+	</select>
+
+	<update id="update" parameterType="PayAccountWithdrawal">
+		UPDATE pay_account_withdrawal set status = #{status},
+		reason = #{reason},
+		`version` = (`version` + 1),
+		update_date = NOW()
+		WHERE  id = #{id}
+		AND    `version` = #{version}
+
+	</update>
+
+	<select id="getWithdrawByIds" parameterType="java.util.List" resultMap="accountWithdrawalResult">
+		SELECT * FROM  pay_account_withdrawal
+		WHERE id in
+		<foreach collection="ids" item="item" index="index"
+				 open="(" separator="," close=")">#{item}
+		</foreach>
+	</select>
+
+
+</mapper>

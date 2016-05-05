@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.AccountBillDao">
+
+	<resultMap id="accountBillMap" type="com.kaolafm.payment.entity.PayAccountBill" >
+	    <id column="id" property="id" />
+	    <result column="uid" property="uid"/>
+	    <result column="ref_id" property="refId"/>
+	    <result column="description" property="description"/>
+	    <result column="leaf_type" property="leafType"/>
+	    <result column="bills_type" property="billsType"/>
+	    <result column="leaf_quantity" property="leafQuantity"/>
+	    <result column="cash_quantity" property="cashQuantity"/>
+	    <result column="green_leaf_balance_quantity" property="greenLeafBalanceQuantity"/>
+	    <result column="gold_leaf_balance_quantity" property="goldLeafBalanceQuantity"/>
+	    <result column="recharge_type" property="rechargeType"/>
+	    <result column="create_date" property="createDate"/>
+  	</resultMap>
+
+
+	 <insert id="save" parameterType="PayAccountBill" useGeneratedKeys="true" keyProperty="id">
+		INSERT  INTO  pay_account_bills (uid,ref_id,description,leaf_type,bills_type,leaf_quantity,
+		 cash_quantity,green_leaf_balance_quantity,gold_leaf_balance_quantity,recharge_type,create_date)
+		 VALUES
+		(#{uid},#{refId},#{description},#{leafType},#{billsType},#{leafQuantity},
+		 #{cashQuantity},#{greenLeafBalanceQuantity},#{goldLeafBalanceQuantity},#{rechargeType},NOW())
+	</insert>
+
+
+	
+	<select id="getAccountBillLeafCount" parameterType="map" resultType="long">
+		SELECT SUM(leaf_quantity) FROM pay_account_bills
+		<where>
+			<if test="uid != null">uid=#{uid}</if>
+			<if test="type != null">AND leaf_type=#{type}</if>
+		</where>
+	</select>
+
+</mapper>

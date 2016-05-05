@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.BatchWithdrawDao">
+
+	<resultMap id="batchWithdraw" type="com.kaolafm.payment.entity.PayBatchWithdraw">
+		<id column="id" property="id" />
+		<result column="batch_no" property="batchNo" />
+		<result column="withdraw_id" property="withdrawId" />
+		<result column="status" property="status" />
+		<result column="notify_time" property="notifyTime" />
+		<result column="notify_type" property="notifyType" />
+		<result column="notify_id" property="notifyId" />
+		<result column="create_date" property="createDate"/>
+		<result column="alipay_account" property="alipayAccount"/>
+		<result column="alipay_name" property="alipayName"/>
+		<result column="cash_quantity" property="cashQuantity"/>
+	</resultMap>
+
+	<insert id="batchInsert"  parameterType="java.util.List">
+		INSERT INTO pay_batch_withdraw (batch_no,withdraw_id,status,create_date)
+		VALUES
+		<foreach collection="withdrawList" item="item" index="index" separator=",">
+			(#{item.batchNo},#{item.withdrawId},#{item.status},#{item.createDate})
+		</foreach>
+	</insert>
+
+	<select id="getWithdrawInfo" parameterType="String" resultMap="batchWithdraw">
+		SELECT * FROM pay_batch_withdraw WHERE batch_no = #{batchNo}
+	</select>
+
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.WxpayDao">
+
+	<resultMap id="tradeWxResult" type="com.kaolafm.payment.entity.PayTradeWeixinResult" >
+	    <id column="id" property="id"/>
+	    <result column="out_trade_no" property="outTradeNo"/>
+	    <result column="total_fee" property="totalFee"/>
+	    <result column="fee_type" property="feeType"/>
+	    <result column="appid" property="appid"/>
+	    <result column="mch_id" property="mchId"/>
+	    <result column="device_info" property="deviceInfo"/>
+	    <result column="nonce_str" property="nonceStr"/>
+	    <result column="sign" property="sign"/>
+	    <result column="return_code" property="returnCode"/>
+	    <result column="result_code" property="resultCode"/>
+	    <result column="err_code" property="errCode"/>
+	    <result column="err_code_des" property="errCodeDes"/>
+	    <result column="openid" property="openId"/>
+	    <result column="is_subscribe" property="isSubscribe"/>
+	    <result column="trade_type" property="tradeType"/>
+	    <result column="bank_type" property="bankType"/>
+	    <result column="cash_fee" property="cashFee"/>
+	    <result column="cash_fee_type" property="cashFeeType"/>
+	    <result column="coupon_fee" property="couponFee"/>
+	    <result column="coupon_count" property="couponCount"/>
+	    <result column="coupon_id_n" property="couponIdN"/>
+	    <result column="coupon_fee_n" property="couponFeeN"/>
+	    <result column="transaction_id" property="transactionId"/>
+	    <result column="attach" property="attach"/>
+	    <result column="time_end" property="timeEnd"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="update_date" property="updateDate"/>
+  	</resultMap>
+  	
+  	<select id="getTradeWeixinResultByOutTradeNo" parameterType="String" resultMap="tradeWxResult">
+  		select * from pay_trade_weixin_result where out_trade_no = #{outTradeNo}
+  	</select>
+  	
+  	<insert id="saveTradeWeixinResult" parameterType="com.kaolafm.payment.entity.PayTradeWeixinResult" useGeneratedKeys="true" keyProperty="id">
+  		insert into pay_trade_weixin_result(out_trade_no,total_fee,fee_type,appid,mch_id,device_info,nonce_str,sign,return_code,result_code,err_code,err_code_des,openid,is_subscribe,trade_type,bank_type,cash_fee,cash_fee_type,coupon_fee,coupon_count,coupon_id_n,coupon_fee_n,transaction_id,attach,time_end,create_date,update_date)
+  			values(#{outTradeNo},#{totalFee},#{feeType},#{appid},#{mchId},#{deviceInfo},#{nonceStr},#{sign},#{returnCode},#{resultCode},#{errCode},#{errCodeDes},#{openId},#{isSubscribe},#{tradeType},#{bankType},#{cashFee},#{cashFeeType},#{couponFee},#{couponCount},#{couponIdN},#{couponFeeN},#{transactionId},#{attach},#{timeEnd},#{createDate},#{updateDate})
+  	</insert>
+  	
+  	<update id="updateTradeWeixinResult">
+  		UPDATE pay_trade_weixin_result 
+  		SET out_trade_no=#{outTradeNo},total_fee=#{totalFee},fee_type=#{feeType},appid=#{appid},mch_id=#{mchId},
+			device_info=#{deviceInfo},nonce_str=#{nonceStr},sign=#{sign},return_code=#{returnCode},result_code=#{resultCode},
+			err_code=#{errCode},err_code_des=#{errCodeDes},openid=#{openId},is_subscribe=#{isSubscribe},
+			trade_type=#{tradeType},bank_type=#{bankType},cash_fee=#{cashFee},cash_fee_type=#{cashFeeType},
+			coupon_fee=#{couponFee},coupon_count=#{couponCount},coupon_id_n=#{couponIdN},coupon_fee_n=#{couponFeeN},
+			transaction_id=#{transactionId},attach=#{attach},time_end=#{timeEnd},update_date=NOW()
+  		WHERE out_trade_no=#{outTradeNo}
+  	</update>
+
+</mapper>

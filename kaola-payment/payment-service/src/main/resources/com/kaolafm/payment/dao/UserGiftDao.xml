@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.UserGiftDao">
+
+	<resultMap id="userGiftMap" type="com.kaolafm.payment.entity.PayUserGift" >
+	    <id column="id" property="id"/>
+	    <result column="sender_uid" property="senderUid"/>
+	    <result column="receiver_uid" property="receiverUid"/>
+	    <result column="gift_id" property="giftId"/>
+	    <result column="gift_name" property="giftName"/>
+	    <result column="gift_img" property="giftImg"/>
+	    <result column="gift_worth" property="giftWorth"/>
+	    <result column="gift_exchange_rate" property="giftExchangeRate"/>
+	    <result column="quantity" property="quantity"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="sender" property="sender"/>
+	    <result column="receiver" property="receiver"/>
+  	</resultMap>
+
+	<select id="getUserGift" parameterType="int" resultMap="userGiftMap">
+		SELECT * FROM pay_user_gift WHERE ID = #{id}
+	</select>
+
+  	<select id="getUserGiftListCount" parameterType="map" resultType="long">
+  		select count(*) from pay_user_gift
+  		<where>
+  			<if test="type != null">
+		  		<choose>
+	  				<when test="type != null">
+			  			<if test="type == 1">
+				  			receiver_uid=#{uid}
+				  		</if>
+				  		<if test="type == 2">
+				  			sender_uid=#{uid}
+				  		</if>
+	  				</when>
+	  			</choose>
+				<if test="giftName != null">
+					AND gift_name like "%"#{giftName}"%"
+				</if>
+				<if test="sendNickName != null">
+					AND sender like "%"#{sendNickName}"%"
+				</if>
+  			</if>
+  		</where>
+  	</select>
+  	
+  	<select id="getUserGiftPage" parameterType="map" resultMap="userGiftMap">
+  		select * from pay_user_gift
+  		<where>
+  			<if test="type != null">
+		  		<choose>
+	  				<when test="type != null">
+			  			<if test="type == 1">
+				  			receiver_uid=#{uid}
+				  		</if>
+				  		<if test="type == 2">
+				  			sender_uid=#{uid}
+				  		</if>
+	  				</when>
+	  			</choose>
+				<if test="giftName != null">
+					AND gift_name like "%"#{giftName}"%"
+				</if>
+				<if test="sendNickName != null">
+					AND sender like "%"#{sendNickName}"%"
+				</if>
+  			</if>
+  		</where>
+  		ORDER BY create_date DESC
+  		<if test="limitStart != null and limitEnd != null">
+	  		LIMIT #{limitStart},#{limitEnd}
+  		</if>
+  	</select>
+  	
+  	<select id="getUserGiftSum" parameterType="map" resultType="long">
+  		SELECT sum(quantity) FROM pay_user_gift
+  		<where>
+  			<if test="type == 1">
+	  			receiver_uid=#{uid}
+	  		</if>
+	  		<if test="type == 2">
+	  			sender_uid=#{uid}
+	  		</if>
+  		</where>
+  	</select>
+
+	<insert id="save" parameterType="PayUserGift" useGeneratedKeys = "true" keyProperty="id">
+		INSERT  INTO  pay_user_gift (sender_uid,receiver_uid,gift_id,gift_name,gift_img,gift_worth,
+		gift_exchange_rate,quantity,create_date)
+		VALUES
+		(#{senderUid},#{receiverUid},#{giftId},#{giftName},#{giftImg},#{giftWorth},
+		#{giftExchangeRate},#{quantity},NOW())
+	</insert>
+
+
+	<select id="count" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM pay_user_gift WHERE 1=1
+		<if test="orderId != null">
+			AND id = #{orderId}
+		</if>
+		<if test="giftName != null">
+			AND gift_name like "%"#{giftName}"%"
+		</if>
+		<if test="userName != null">
+			AND sender like "%"#{userName}"%"
+		</if>
+		<if test="anchorName != null">
+			AND receiver like "%"#{anchorName}"%"
+		</if>
+	</select>
+	<select id="list" parameterType="map" resultMap="userGiftMap">
+		SELECT * FROM pay_user_gift WHERE 1=1
+		<if test="orderId != null">
+			AND id = #{orderId}
+		</if>
+		<if test="giftName != null">
+			AND gift_name like "%"#{giftName}"%"
+		</if>
+		<if test="userName != null">
+			AND sender like "%"#{userName}"%"
+		</if>
+		<if test="anchorName != null">
+			AND receiver like "%"#{anchorName}"%"
+		</if>
+		ORDER BY create_date DESC LIMIT #{limitStart},#{limitEnd}
+	</select>
+
+
+</mapper>

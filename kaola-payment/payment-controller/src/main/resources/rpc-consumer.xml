@@ -2,12 +2,27 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
        xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://code.alibabatech.com/schema/dubbo        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
-    <dubbo:application name="kaolafm-cahce-rpc-consumer"/>
+    <dubbo:application name="kaolafm-pay-rpc-consumer" logger="slf4j"/>
 
     <dubbo:registry address="${dubbo.registry.address}"/>
 
     <dubbo:annotation/>
     
-    <dubbo:reference id="rpcUserTest" interface="com.kaolafm.payment.service.IUserTestService" check="false"/>
+    <dubbo:reference id="rpcAliService" interface="com.kaolafm.payment.service.IAlipayService" check="false"/>
+    <dubbo:reference id="rpcOrderService" interface="com.kaolafm.payment.service.IOrderService" check="false"/>
+    <dubbo:reference id="rpcWxpayService" interface="com.kaolafm.payment.service.IWxpayService" check="false"/>
+    <dubbo:reference id="rpcUserCenterService" interface="com.kaolafm.payment.service.IUserCenterService" check="false"/>
+    <dubbo:reference id="rpcRechargePlanService" interface="com.kaolafm.payment.service.IRechargePlanService" check="false"/>
+    <dubbo:reference id="rpcGiftService" interface="com.kaolafm.payment.service.IGiftService" check="false"/>
+    <dubbo:reference id="rpcIosPayService" interface="com.kaolafm.payment.service.IosPayService" check="false"/>
 
+    <!-- user -->
+    <dubbo:reference id="rpcUserService" interface="com.kaolafm.user.service.UserService" check="false"/>
+    <dubbo:reference id="rpcAnchorService" interface="com.kaolafm.user.service.AnchorUserService" check="false"/>
+    <dubbo:reference id="rpcNewLiveService" interface="com.kaolafm.cache.service.v31.INewLivePlayService" check="false"/>
+	<dubbo:reference id="rpcCounterService" interface="com.kaolafm.counter.api.CounterService" check="false"/>
+	<dubbo:reference id="rpcSystemLetterService" interface="com.kaolafm.user.service.SystemLetterService" check="false"/>
+
+	<!-- IMService -->
+	<dubbo:reference id="rpcChatService" interface="com.kaolafm.imservice.service.ChatService" check="false" async="true"/>
 </beans>

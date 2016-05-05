@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.GiftDao">
+
+	<resultMap id="giftMap" type="com.kaolafm.payment.entity.PayGift">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="gift_worth" property="giftWorth" />
+		<result column="exchange_rate" property="exchangeRate" />
+		<result column="img" property="img" />
+		<result column="status" property="status" />
+		<result column="createby" property="createby" />
+		<result column="creater_name" property="createrName" />
+		<result column="updateby" property="updateby" />
+		<result column="updater_name" property="updaterName" />
+		<result column="create_date" property="createDate" />
+		<result column="update_date" property="updateDate" />
+		<result column="sort" property="sort" />
+	</resultMap>
+	
+	<select id="getGiftCount" resultType="long">
+		SELECT COUNT(*) FROM pay_gift
+		<where>
+			<choose>
+				<when test="status == null">status!=2</when>
+				<otherwise>status=#{status}</otherwise>
+			</choose>
+			<if test="name != null">and name like "%"#{name}"%"</if>
+		</where>
+	</select>
+	
+	<select id="getGiftList" parameterType="map" resultMap="giftMap">
+		SELECT * FROM pay_gift  
+		<where>
+			<choose>
+				<when test="status == null">status!=2</when>
+				<otherwise>status=#{status}</otherwise>
+			</choose>
+			<if test="name != null">and name like "%"#{name}"%"</if>
+		</where>
+		ORDER BY sort DESC limit #{limitStart},#{limitEnd}
+	</select>
+
+	<select id="getGiftUse" parameterType="long" resultMap="giftMap">
+		SELECT * FROM pay_gift WHERE status=0 AND id=#{giftId}
+	</select>
+	<select id="getGift" parameterType="long" resultMap="giftMap">
+		SELECT * FROM pay_gift WHERE  id = #{giftId}
+	</select>
+	<select id="getGiftByName" parameterType="String" resultMap="giftMap">
+		SELECT * FROM pay_gift WHERE  name = #{giftName}
+	</select>
+	<select id="getGiftMaxOrder" resultType="int">
+		SELECT MAX(sort) FROM pay_gift
+	</select>
+
+	<insert id="savePayGift" parameterType="PayGift" useGeneratedKeys = "true" keyProperty="id">
+		INSERT INTO pay_gift(name,gift_worth,img,exchange_rate,status,sort,createby,creater_name,updateby,updater_name,create_date,update_date)
+		VALUES(#{name},#{giftWorth},#{img},#{exchangeRate},#{status},#{sort},#{createby},#{createrName},#{createby},#{createrName},NOW(),NOW())
+	</insert>
+	
+	<update id="updatePayGift" parameterType="PayGift">
+		UPDATE pay_gift SET name=#{name},img=#{img},status=#{status},gift_worth = #{giftWorth},
+		sort=#{sort},updateby=#{updateby},updater_name=#{updaterName},update_date=NOW()
+		WHERE id=#{id}
+	</update>
+	
+	<update id="batchUpdateGift" parameterType="java.util.List">
+		UPDATE pay_gift SET status= #{status} WHERE id IN
+	    <foreach collection="giftIds" index="index" item="giftid" open="(" separator="," close=")">
+	        #{giftid} 
+	    </foreach>
+	</update>
+
+
+</mapper>

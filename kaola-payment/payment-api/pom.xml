@@ -13,7 +13,13 @@
     <version>${api.version}</version>
     <name>payment-api</name>
     <url>http://maven.apache.org</url>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.kaolafm.kaolafm-resource-interface</groupId>
+            <artifactId>kaolafm-resource-interface</artifactId>
+            <version>${api.version}</version>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>

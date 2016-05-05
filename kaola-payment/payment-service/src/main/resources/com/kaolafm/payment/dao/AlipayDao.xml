@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.AlipayDao">
+
+	<resultMap id="alipayResult" type="com.kaolafm.payment.entity.PayAlipayResult" >
+	    <id column="id" property="id" />
+	    <result column="out_trade_no" property="outTradeNo"/>
+	    <result column="notify_time" property="notifyTime"/>
+	    <result column="notify_type" property="notifyType"/>
+	    <result column="notify_id" property="notifyId"/>
+	    <result column="sign_type" property="signType"/>
+	    <result column="sign" property="sign"/>
+	    <result column="subject" property="subject"/>
+	    <result column="trade_no" property="tradeNo"/>
+	    <result column="trade_status" property="tradeStatus"/>
+	    <result column="gmt_create" property="gmtCreate"/>
+	    <result column="gmt_payment" property="gmtPayment"/>
+	    <result column="seller_email" property="sellerEmail"/>
+	    <result column="buyer_id" property="buyerId"/>
+	    <result column="price" property="price"/>
+	    <result column="total_fee" property="totalFee"/>
+	    <result column="quantity" property="quantity"/>
+	    <result column="discount" property="discount"/>
+	    <result column="is_total_fee_adjust" property="isTotalFeeAdjust"/>
+	    <result column="use_coupon" property="useCoupon"/>
+	    <result column="refund_status" property="refundStatus"/>
+	    <result column="gmt_refund" property="gmtRefund"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="update_date" property="updateDate"/>
+
+  	</resultMap>
+
+	<insert id="save" parameterType="PayAlipayResult" useGeneratedKeys="true" keyProperty="id">
+		INSERT  INTO  pay_trade_alipay_result (out_trade_no,subject,total_fee,trade_status,create_date)
+		VALUES
+		(#{outTradeNo},#{subject},#{totalFee},#{tradeStatus},NOW())
+	</insert>
+
+	<select id="getByOutTradeNo" parameterType="String" resultMap="alipayResult">
+		SELECT * FROM pay_trade_alipay_result WHERE out_trade_no = #{outTradeNo}
+	</select>
+
+	<update id="update" parameterType="PayAlipayResult">
+		UPDATE pay_trade_alipay_result
+		SET total_fee = #{totalFee},notify_time = #{notifyTime},notify_type = #{notifyType},
+			notify_id = #{notifyId},sign_type = #{signType},sign = #{sign},subject = #{subject},
+			trade_no = #{tradeNo},trade_status = #{tradeStatus},gmt_create = #{gmtCreate},
+			gmt_payment = #{gmtPayment},seller_email = #{sellerEmail},buyer_id = #{buyerId},
+			price = #{price},quantity = #{quantity},update_date = NOW()
+		WHERE
+			out_trade_no = #{outTradeNo}
+	</update>
+
+</mapper>

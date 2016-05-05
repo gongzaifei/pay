@@ -38,7 +38,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
-		<url-pattern>/payapi/*</url-pattern>
+		<url-pattern>/pay/*</url-pattern>
 	</servlet-mapping>
 
 </web-app>

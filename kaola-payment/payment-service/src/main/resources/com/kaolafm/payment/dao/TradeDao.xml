@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.TradeDao">
+
+	<resultMap id="tradeMap" type="com.kaolafm.payment.entity.PayTrade" >
+	    <id column="id" property="id" />
+	    <result column="trade_id" property="tradeId"/>
+	    <result column="type" property="type"/>
+	    <result column="uid" property="uid"/>
+	    <result column="trade_sum_fee" property="tradeSumFee"/>
+	    <result column="quantity" property="quantity"/>
+	    <result column="plan_id" property="planId"/>
+	    <result column="plan_name" property="planName"/>
+	    <result column="plan_leaf_quantity" property="planLeafQuantity"/>
+	    <result column="plan_present_leaf" property="planPresentLeaf"/>
+	    <result column="plan_fee" property="planFee"/>
+	    <result column="plan_img" property="planImg"/>
+	    <result column="status" property="status"/>
+	    <result column="creater_name" property="createrName"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="updateby" property="updateby"/>
+	    <result column="updater_name" property="updaterName"/>
+	    <result column="update_date" property="updateDate"/>
+	    <result column="version" property="version"/>
+  	</resultMap>
+
+	<insert id="save" parameterType="PayTrade" useGeneratedKeys = "true" keyProperty="id">
+		INSERT  INTO  pay_trade (trade_id,type,uid,trade_sum_fee,quantity,plan_id,plan_name,plan_leaf_quantity,plan_present_leaf,plan_fee,plan_img,status,create_date,update_date,creater_name)
+		VALUES
+		(#{tradeId},#{type},#{uid},#{tradeSumFee},#{quantity},#{planId},#{planName},#{planLeafQuantity},#{planPresentLeaf},#{planFee},#{planImg},#{status},NOW(),NOW(),#{createrName})
+	</insert>
+
+	<select id="getTradeByTradeId" parameterType="String" resultMap="tradeMap">
+		SELECT * FROM pay_trade WHERE trade_id = #{tradeId}
+	</select>
+
+	<update id="update" parameterType="PayTrade">
+		UPDATE pay_trade set status = #{status},
+				`version` = (`version` + 1),
+				update_date = NOW()
+		WHERE  trade_id = #{tradeId}
+		AND    `version` = #{version}
+	</update>
+	
+	<select id="getUserTradeRecordCount" parameterType="map" resultType="long">
+		SELECT count(*) FROM pay_trade
+		<where>
+			<if test="uid != null">
+				uid=#{uid}
+			</if>
+			<if test="orderid != null">
+				AND trade_id=#{orderid}
+			</if>
+			<if test="type != null">
+				AND type=#{type}
+			</if>
+			<if test="planName != null">
+				AND plan_name like "%"#{planName}"%"
+			</if>
+		</where>
+	</select>
+	
+	<select id="getUserTradeRecordList" parameterType="map" resultMap="tradeMap">
+		SELECT trade_id as tradeId,type,uid,trade_sum_fee as tradeSumFee,plan_name as planName,
+				plan_leaf_quantity as planLeafQuantity,plan_present_leaf,status,create_date as createDate
+		FROM pay_trade
+		<where>
+			<if test="uid != null">
+				uid=#{uid}
+			</if>
+			<if test="orderid != null">
+				trade_id=#{orderid}
+			</if>
+			<if test="type != null">
+				AND type=#{type}
+			</if>
+			<if test="planName != null">
+				AND plan_name like "%"#{planName}"%"
+			</if>
+		</where>
+		ORDER BY create_date DESC
+		LIMIT #{limitStart},#{limitEnd}
+	</select>
+	
+	<select id="getTradeRecordCount" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM pay_trade
+		<where>
+			<if test="payType != null">type=#{payType}</if>
+			<if test="payStatus != null"> AND status=#{payStatus}</if>
+			<if test="orderid != null"> AND trade_id like "%"#{orderid}"%"</if>
+			<if test="nickName != null"> AND creater_name like "%"#{nickName}"%" </if>
+			<if test="planName != null"> AND plan_name like "%"#{planName}"%" </if>
+		</where>
+	</select>
+	
+	<select id="getTradeRecordList" parameterType="map" resultMap="tradeMap">
+		SELECT * FROM pay_trade
+		<where>
+			<if test="payType != null">type=#{payType}</if>
+			<if test="payStatus != null"> AND status=#{payStatus}</if>
+			<if test="orderid != null"> AND trade_id like "%"#{orderid}"%"</if>
+			<if test="nickName != null"> AND creater_name like "%"#{nickName}"%" </if>
+			<if test="planName != null"> AND plan_name like "%"#{planName}"%" </if>
+		</where>
+		ORDER BY create_date DESC
+		<if test="limitStart != null and limitEnd != null">
+			limit #{limitStart},#{limitEnd}
+		</if>
+	</select>
+
+	<select id="getByUidAndPlanId" parameterType="map" resultMap="tradeMap">
+		SELECT * FROM pay_trade WHERE uid = #{uid} AND plan_id = #{planId} and status = 1 limit 1
+	</select>
+
+</mapper>

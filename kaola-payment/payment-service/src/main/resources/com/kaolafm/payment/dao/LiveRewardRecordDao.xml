@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.LiveRewardRecordDao">
+
+	<resultMap id="liveRewardMap" type="com.kaolafm.payment.entity.PayLiveRewardRecord" >
+	    <id column="id" property="id"/>
+	    <result column="live_id" property="liveId"/>
+	    <result column="live_program_id" property="liveProgramId"/>
+	    <result column="sender_id" property="senderId"/>
+	    <result column="leaf_amount" property="leafAmount"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="update_date" property="updateDate"/>
+	    <result column="anchor_id" property="anchorId"/>
+  	</resultMap>
+  	
+  	<select id="getAnchorLiveRewardSumLeaf" parameterType="map" resultType="long">
+  		SELECT sum(leaf_amount) FROM pay_live_reward_record
+  		<where>
+  			<if test="anchorid != null">
+  				anchor_id=#{anchorid}
+  			</if>
+  			<!-- <if test="programid != null">
+  				AND live_program_id=#{programid}
+  			</if> -->
+  		</where>
+  	</select>
+  	
+  	<select id="getUserLiveRewardRecordCount" parameterType="map" resultType="long">
+  		SELECT COUNT(*) FROM (
+  			SELECT plr.id FROM pay_live_reward_record plr LEFT JOIN user_info ui ON plr.sender_id=ui.uid WHERE ui.status=0
+	  		<if test="anchorid != null">
+	  			AND plr.anchor_id=#{anchorid}
+	  		</if>
+	  		<!-- <if test="programid != null">AND live_program_id=#{programid}</if> -->
+	  		GROUP BY plr.sender_id ) as t_a
+  	</select>
+  	
+  	<select id="getUserLiveRewardList" parameterType="map" resultMap="liveRewardMap">
+  		SELECT plr.id,plr.anchor_id as anchorId,plr.live_id as liveId,plr.live_program_id as liveProgramId,plr.sender_id as senderId,
+  				SUM(plr.leaf_amount) as leafAmount, plr.create_date as createDate,plr.update_date as updateDate 
+  		FROM pay_live_reward_record AS plr LEFT JOIN user_info ui ON plr.sender_id=ui.uid
+  		WHERE ui.status=0
+  		<if test="anchorid != null">
+  			AND plr.anchor_id=#{anchorid}
+  		</if>
+  		<!-- <if test="programid != null">AND live_program_id=#{programid}</if> -->
+  		GROUP BY plr.sender_id
+  		ORDER BY leafAmount DESC,plr.create_date DESC,plr.id DESC
+  		LIMIT #{limitStart},#{limitEnd}
+  	</select>
+
+	<select id="getLiveReward" parameterType="map" resultMap="liveRewardMap">
+		SELECT * FROM pay_live_reward_record WHERE sender_id = #{senderId} AND live_program_id = #{liveProgramId} FOR UPDATE
+	</select>
+
+	<insert id="save" parameterType="PayLiveRewardRecord" useGeneratedKeys = "true" keyProperty="id">
+		INSERT  INTO  pay_live_reward_record (live_id,live_program_id,sender_id,leaf_amount,anchor_id,create_date,update_date)
+		VALUES
+		(#{liveId},#{liveProgramId},#{senderId},#{leafAmount},#{anchorId},NOW(),NOW())
+	</insert>
+
+
+	<update id="update" parameterType="PayLiveRewardRecord">
+		UPDATE pay_live_reward_record set leaf_amount = #{leafAmount},
+		update_date = NOW()
+		WHERE  live_program_id = #{liveProgramId}
+		AND    sender_id = #{senderId}
+	</update>
+
+
+
+
+</mapper>

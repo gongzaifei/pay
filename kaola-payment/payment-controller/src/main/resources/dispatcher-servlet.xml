@@ -83,6 +83,7 @@
 	<mvc:interceptors>
 		<!-- 如果多个拦截器,顺序执行 -->
 		<bean class="com.kaolafm.payment.interceptor.CommonInterceptor" />
+		<bean class="com.kaolafm.payment.interceptor.SignInterceptor" />
 	</mvc:interceptors>
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
         <property name="defaultEncoding" value="utf-8"></property>   

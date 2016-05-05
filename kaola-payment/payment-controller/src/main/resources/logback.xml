@@ -15,7 +15,7 @@
 		</encoder>
 	</appender>
 	<appender name="logfile"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${config_path}/service.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${config_path}/service.%d{yyyy-MM-dd}.log
@@ -29,7 +29,7 @@
 	</appender>
 
 	<appender name="requestLogAppender"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${config_path}/request.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${config_path}/request.%d{yyyy-MM-dd}.log
@@ -41,10 +41,10 @@
 			</pattern>
 		</encoder>
 	</appender>
-	
-	
+
+
 	<appender name="slowLogAppender"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${config_path}/slow.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${config_path}/slow.%d{yyyy-MM-dd}.log
@@ -56,9 +56,9 @@
 			</pattern>
 		</encoder>
 	</appender>
-	
-   <appender name="errorLogAppender"
-		class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+	<appender name="errorLogAppender"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${config_path}/error.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${config_path}/error.%d{yyyy-MM-dd}.log
@@ -71,51 +71,23 @@
 		</encoder>
 	</appender>
 
-	<appender name="socialLogAppender"
-			  class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${config_path}/social.log</file>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${config_path}/social.%d{yyyy-MM-dd}.log
-			</fileNamePattern>
-			<maxHistory>7</maxHistory>
-		</rollingPolicy>
-		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-			</pattern>
-		</encoder>
-	</appender>
-	
-	<!-- <appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender"> -->
-	<!-- <RemoteHost>10.10.4.149</RemoteHost> -->
-	<!-- <Port>6000</Port> -->
-	<!-- <ReconnectionDelay>10000</ReconnectionDelay> -->
-	<!-- <IncludeCallerData>false</IncludeCallerData> -->
-	<!-- </appender> -->
-	<!-- <logger name="com.kaolafm.cache.util.StatDispatcher" level="INFO" -->
-	<!-- additivity="false"> -->
-	<!-- <appender-ref ref="statistics" /> -->
-	<!-- <appender-ref ref="SOCKET" /> -->
-	<!-- </logger> -->
 
 	<logger name="requestLog"
-		level="INFO" additivity="false">
+			level="INFO" additivity="false">
 		<appender-ref ref="requestLogAppender" />
 	</logger>
-	
+
 	<logger name="slowLog" level="INFO" additivity="false">
 		<appender-ref ref="slowLogAppender" />
 	</logger>
-	
-    <logger name="stdout" level="INFO" additivity="false">
+
+	<logger name="stdout" level="INFO" additivity="false">
 		<appender-ref ref="errorLogAppender" />
 	</logger>
-	
+
 	<logger name="errorLog" level="INFO" additivity="false">
-        <appender-ref ref="errorLogAppender"/>
-    </logger>
-	<logger name="socialLog" level="INFO" additivity="false">
-        <appender-ref ref="socialLogAppender"/>
-    </logger>
+		<appender-ref ref="errorLogAppender"/>
+	</logger>
 
 	<root level="INFO">
 		<appender-ref ref="stdout" />

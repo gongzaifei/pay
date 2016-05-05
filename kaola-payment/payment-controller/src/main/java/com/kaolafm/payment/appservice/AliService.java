@@ -1,7 +1,11 @@
 package com.kaolafm.payment.appservice;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.kaolafm.payment.request.CommonParams;
-import org.springframework.stereotype.Service;
 
 /**
  * @author gongzf
@@ -9,6 +13,9 @@ import org.springframework.stereotype.Service;
  */
 public interface AliService {
 
-    public String alipaySignAndParams(Double fee, CommonParams commonParam);
+    public Map<String, String> alipaySignAndParams(Integer planId,CommonParams commonParam);
+
+    public boolean verifyAlipayNotify(HttpServletRequest request) throws UnsupportedEncodingException;
+
 
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.UserAccountDao">
+
+	<resultMap id="userAccountMap" type="com.kaolafm.payment.entity.PayUserAccount" >
+	    <id column="uid" property="uid"/>
+	    <result column="green_leaf" property="greenLeaf"/>
+	    <result column="gold_leaf" property="goldLeaf"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="update_date" property="updateDate"/>
+  	</resultMap>
+
+
+	 <select id="selectLock" parameterType="long" resultMap="userAccountMap">
+			SELECT * FROM pay_user_account WHERE uid = #{uid}  FOR  UPDATE
+	 </select>
+
+	 <insert id="save" parameterType="PayUserAccount">
+		INSERT  INTO  pay_user_account (uid,green_leaf,gold_leaf,create_date,update_date)
+		VALUES
+		(#{uid},#{greenLeaf},#{goldLeaf},NOW(),NOW())
+	</insert>
+
+	<update id="update" parameterType="PayUserAccount">
+		UPDATE pay_user_account SET green_leaf = #{greenLeaf},gold_leaf = #{goldLeaf},
+		update_date = NOW()
+		WHERE uid = #{uid}
+	</update>
+	
+	<select id="selectUserAccountByUid" parameterType="long" resultMap="userAccountMap">
+			SELECT * FROM pay_user_account WHERE uid = #{uid}
+	 </select>
+	 
+	 <select id="getUsreAccountPage" parameterType="map" resultMap="userAccountMap">
+	 	SELECT * FROM pay_user_account LIMIT #{limitStart},#{limitEnd}
+	 </select>
+
+</mapper>

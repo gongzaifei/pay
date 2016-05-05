@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kaolafm.payment.dao.IOSPayDao">
+
+	<resultMap id="iosPayMap" type="com.kaolafm.payment.entity.PayIosResult" >
+	    <id column="id" property="id" />
+	    <result column="id" property="id"/>
+	    <result column="status" property="status"/>
+	    <result column="product_id" property="productId"/>
+	    <result column="out_trade_no" property="outTradeNo"/>
+	    <result column="quantity" property="quantity"/>
+	    <result column="total_fee" property="totalFee"/>
+	    <result column="create_date" property="createDate"/>
+	    <result column="update_date" property="updateDate"/>
+	    <result column="receipt_md5" property="receiptMd5"/>
+  	</resultMap>
+
+	 <insert id="save" parameterType="PayIosResult" useGeneratedKeys="true" keyProperty="id">
+		INSERT  INTO  pay_trade_iospay_result (id,status,receipt,product_id,out_trade_no,quantity,
+		 total_fee,create_date,update_date)
+		 VALUES
+		(#{id},#{status},#{receipt},#{productId},#{outTradeNo},#{quantity},
+		 #{totalFee},NOW(),NOW())
+	</insert>
+	<update id="update" parameterType="PayIosResult">
+		UPDATE pay_trade_iospay_result set status = #{status},
+		receipt = #{receipt},product_id = #{productId},
+		quantity = #{quantity},total_fee = #{totalFee},
+		update_date = NOW(),receipt_md5 = #{receiptMd5}
+		WHERE  out_trade_no = #{outTradeNo}
+	</update>
+
+	<select id="getIosResult" parameterType="String" resultMap="iosPayMap">
+		SELECT * FROM pay_trade_iospay_result WHERE out_trade_no = #{outTradeNo}
+	</select>
+	<select id="getIosResultByMd5" parameterType="String" resultMap="iosPayMap">
+		SELECT * FROM pay_trade_iospay_result WHERE receipt_md5 = #{receiptMd5}
+	</select>
+
+</mapper>

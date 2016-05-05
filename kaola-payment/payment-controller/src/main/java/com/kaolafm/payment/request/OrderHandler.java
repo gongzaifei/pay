@@ -1,19 +1,26 @@
 package com.kaolafm.payment.request;
 
+import java.util.Random;
 import java.util.TreeMap;
-import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.kaolafm.payment.utils.IdBuildUtils;
 import com.kaolafm.payment.utils.MD5Utils;
-import com.kaolafm.payment.utils.PropertiesUtils;
 
 public class OrderHandler {
+	
+	Logger logger = LoggerFactory.getLogger(OrderHandler.class);
 
 	/** 请求的参数 */
 	private TreeMap<String, String> parameters = new TreeMap<String, String>();
+	
+	public static final String allChar = "123456789abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ";
 
 	public OrderHandler() {
 	}
@@ -28,33 +35,50 @@ public class OrderHandler {
 	 */
 	public void setParameter(String parameter, String parameterValue) {
 		String v = "";
-		if (null != parameterValue) {
+		if (StringUtils.isNotBlank(parameterValue)) {
 			v = parameterValue.trim();
+			this.parameters.put(parameter, v);
 		}
-		this.parameters.put(parameter, v);
 	}
 
 	public String getWXPayXml() {
-		StringBuffer sb = new StringBuffer();
 		Document document = DocumentHelper.createDocument();
 		Element element = document.addElement("xml");
 		for (String key : parameters.keySet()) {
-			sb.append(key).append("=").append(parameters.get(key) + "&");
-			element.addElement(key).setText(parameters.get(key));
+			if(!key.equals("wxKey") && StringUtils.isNotBlank(parameters.get(key))){
+				element.addElement(key).setText(parameters.get(key));
+			}
 		}
-		sb.append("key=").append(PropertiesUtils.getValue("wxKey"));
-		System.out.println("sb====" + sb.toString().substring(0, sb.toString().length()));
-		String sign = MD5Utils.getMD5Str(sb.toString().substring(0, sb.toString().length())).toUpperCase();
-		System.out.println("sign====" + sign);
+		String sign = this.getWxSign();
 		element.addElement("sign").setText(sign);
 
 		return document.asXML();
 	}
-
-	public static String getKaolaOrderId() {
-		long time = System.currentTimeMillis();
-		String s = UUID.randomUUID().toString();
-		return "kf" + time + s.substring(0, 8) + s.substring(9, 10);
+	
+	public String getWxSign(){
+		StringBuffer sb = new StringBuffer();
+		for (String key : parameters.keySet()) {
+			if(!key.equals("wxKey") && StringUtils.isNotBlank(parameters.get(key))){
+				sb.append(key).append("=").append(parameters.get(key) + "&");
+			}
+		}
+		sb.append("key=").append(parameters.get("wxKey"));
+		String sign = MD5Utils.getMD5Str(sb.toString().substring(0, sb.toString().length())).toUpperCase();
+		return sign;
 	}
+
+	public static String getKaolaOrderId(String uid) {
+		return IdBuildUtils.buildFillId(uid);
+	}
+	
+	public static String generateString(int length) {
+		StringBuffer sb = new StringBuffer();
+		Random random = new Random();
+		for (int i = 0; i < length; i++) {
+			sb.append(allChar.charAt(random.nextInt(allChar.length())));
+		}
+		return sb.toString();
+	}
+
 
 }

@@ -50,16 +50,16 @@ public class AlipayConstant {
     //批量转账接口名称
     public static final String withdraw_service = "batch_trans_notify";
 
-    public static final  String partener ="2088021786280266";
+    public static final  String partener ="啊发发";
 
     //批量转账通知URL
     public static final  String withdraw_notify_url ="http://repay.kaolafm.com/pay/alipay/withdraw/notify";
 
     //付款方的账户名
-    public static final  String seller_account="网乐互联（北京）科技有限公司";
+    public static final  String seller_account="账户名";
 
     //卖家支付宝账号
-    public static final  String seller_id="gaol@autoradio.cn";
+    public static final  String seller_id="啊啊";
 
     //签名方式
     public static final  String sign_type="RSA";
